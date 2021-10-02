@@ -10,7 +10,6 @@ const router = Router()
 router.get('/redirect', async (req, res) => {
   const { code } = req.query
 
-  console.log('user:', req.session.user)
   if(req.session.user){
     res.redirect('/api/test')
     return
