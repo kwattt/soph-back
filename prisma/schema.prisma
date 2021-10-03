@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model autochannels {
+  id            Int    @id @default(autoincrement())
+  guild         String @db.VarChar
+  origenchannel String @db.VarChar
+  targetchannel String @db.VarChar
+}
+
+model dusers {
+  id           Int    @id @default(autoincrement())
+  uid          String @db.VarChar
+  accessToken  String @db.VarChar
+  refreshToken String @db.VarChar
+}
+
+model guilds {
+  id       Int    @id @default(autoincrement())
+  guild    String @db.VarChar
+  welcome  String @db.VarChar
+  birthday String @db.VarChar
+  stalk    Int
+  bdaymsg  String @db.VarChar
+  bdayutc  Int
+  type     Int
+  prefix   String @db.VarChar
+  levels   Int
+}
+
+model levelchannels {
+  id      Int    @id @default(autoincrement())
+  guild   String @db.VarChar
+  channel String @db.VarChar
+}
+
+model levels {
+  id     Int    @id @default(autoincrement())
+  guild  String @db.VarChar
+  uid    String @db.VarChar
+  points Int
+  xp     Int
+  cd     Int
+  level  Int
+}
+
+model logs {
+  id          Int    @id @default(autoincrement())
+  guild       String @db.VarChar
+  time        Int
+  description String @db.VarChar
+}
+
+model msgcustoms {
+  id      Int    @id @default(autoincrement())
+  time    Int
+  guild   String @db.VarChar
+  name    String @db.VarChar(50)
+  message String @db.VarChar(500)
+}
+
+model oraculos {
+  id    Int    @id @default(autoincrement())
+  guild String @db.VarChar
+  msg   String @db.VarChar
+}
+
+model purges {
+  id      Int    @id @default(autoincrement())
+  guild   String @db.VarChar
+  channel String @db.VarChar
+  hour    Int
+  minute  Int
+  utc     Int
+}
+
+model shops {
+  id      Int    @id @default(autoincrement())
+  guild   String @db.VarChar
+  name    String @db.VarChar
+  role    String @db.VarChar
+  channel String @db.VarChar
+  price   Int
+  type    Int
+}
+
+model socials {
+  id          Int    @id @default(autoincrement())
+  guild       String @db.VarChar
+  channel     String @db.VarChar
+  name        String @db.VarChar
+  last_update String @db.VarChar
+  live        Int
+  type        Int
+  real_name   String @db.VarChar
+}
+
+model stalkmsgs {
+  id    Int    @id @default(autoincrement())
+  guild String @db.VarChar
+  msg   String @db.VarChar
+}
+
+model stalkroles {
+  id    Int    @id @default(autoincrement())
+  guild String @db.VarChar
+  role  String @db.VarChar
+}
+
+model users {
+  id    Int    @id @default(autoincrement())
+  uid   String @db.VarChar
+  month Int
+  day   Int
+}
+
+model welcomes {
+  id    Int    @id @default(autoincrement())
+  guild String @db.VarChar
+  type  Int
+  msg   String @db.VarChar
+}
