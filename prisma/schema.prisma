@@ -14,13 +14,6 @@ model autochannels {
   targetchannel String @db.VarChar
 }
 
-model dusers {
-  id           Int    @id @default(autoincrement())
-  uid          String @db.VarChar
-  accessToken  String @db.VarChar
-  refreshToken String @db.VarChar
-}
-
 model guilds {
   id       Int    @id @default(autoincrement())
   guild    String @db.VarChar

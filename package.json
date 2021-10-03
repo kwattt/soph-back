@@ -7,6 +7,9 @@
     "start:dev": "nodemon ./src/index.ts",
     "build": "tsc --build"
   },
+  "prisma": {
+    "seed": "ts-node ./prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "3.1.1",
     "@types/connect-redis": "^0.0.17",
@@ -15,6 +18,8 @@
     "axios": "^0.22.0",
     "connect-redis": "^6.0.0",
     "cors": "^2.8.5",
+    "discord-api-types": "^0.23.1",
+    "discord.js": "^13.1.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.2",

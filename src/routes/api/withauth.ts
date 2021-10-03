@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import isLogged from '../../middleware/logged';
-import levels from './levels'
+import isLogged from '../../middleware/auth/logged';
+import user from './user';
 
 const router = Router();
 
@@ -12,10 +12,6 @@ router.use((req, res, next) => {
   next()
 })
 
-router.get('/test', (req, res) => {
-  res.send('logged!')
-})
-
-router.use('/levels', levels)
+router.use('/user', user)
 
 export default router

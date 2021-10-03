@@ -4,6 +4,8 @@ declare global {
       DISCORD_OAUTH_ID: string
       DISCORD_OAUTH_SECRET: string
       DISCORD_URI: string
+      DISCORD_BOT_TOKEN: string
+
       COOKIE_SECRET: string
       APP_PORT: number
       

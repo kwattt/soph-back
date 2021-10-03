@@ -1,49 +1,54 @@
 import { Router } from 'express';
 import axios, { AxiosResponse } from 'axios';
 import url from 'url'
-import { User } from '../../middleware/User';
+import { RESTPostOAuth2AccessTokenResult } from 'discord-api-types';
+import { API_getGuilds, API_getUser } from './user.service';
 
 const REDIRECT_URI = `https://discord.com/api/oauth2/authorize?client_id=657839781509857302&redirect_uri=${encodeURIComponent(process.env.DISCORD_URI || '')}&response_type=code&scope=identify%20guilds`
 
 const router = Router()
 
 router.get('/redirect', async (req, res) => {
-  const { code } = req.query
+  const session = req.session;
 
-  if(req.session.user){
-    res.redirect('/api/test')
+  if(session.access){
+    res.redirect('/')
     return
   }
+  const { code } = req.query
 
   if(code){
-    const responseData = new url.URLSearchParams({
-      client_id: process.env.DISCORD_OAUTH_ID!,
-      client_secret: process.env.DISCORD_OAUTH_SECRET!,
-      grant_type: 'authorization_code',
-      code: code.toString(),
-      redirect_uri: process.env.DISCORD_URI!
-    })
 
     try {
-      const response : AxiosResponse<User> = await axios.post('https://discord.com/api/v8/oauth2/token',
-      responseData.toString(),
+      const responseAccess : AxiosResponse<RESTPostOAuth2AccessTokenResult> = await axios.post('https://discord.com/api/v8/oauth2/token',
+      new url.URLSearchParams({
+        client_id: process.env.DISCORD_OAUTH_ID!,
+        client_secret: process.env.DISCORD_OAUTH_SECRET!,
+        grant_type: 'authorization_code',
+        code: code.toString(),
+        redirect_uri: process.env.DISCORD_URI!
+      }),
       {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
 
-      const data = response.data
-
-      const userData = {
-        access_token: data.access_token,
-        expires_in: data.expires_in,
-        scope: data.scope,
-        token_type: data.token_type
+      session.access = responseAccess.data
+      
+      let tguilds = await API_getGuilds(responseAccess.data.access_token);
+      if(tguilds == 'err'){
+        res.redirect('/auth/revoke')
+        return
       }
+      session.guilds = tguilds
 
-      const session = req.session;
-      session.user = userData
+      let tuser = await API_getUser(responseAccess.data.access_token);
+      if(tuser == 'err'){
+        res.redirect('/auth/revoke')
+        return
+      }
+      session.user = tuser
 
       res.redirect('/')
       return
@@ -65,10 +70,12 @@ router.get('/login', async (req, res) => {
 
 router.get('/revoke', async (req, res) => {
   req.session.destroy(err => {
-    if(err)
+    if(err){
+      res.sendStatus(500)
       console.log('error:', err)
+    }
   })
-  res.redirect('/')
+  res.sendStatus(200)
 })
 
 export default router
