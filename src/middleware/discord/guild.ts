@@ -1,0 +1,36 @@
+import {Router, Request} from 'express'
+import {Permissions} from 'discord.js'
+
+const router = Router()
+
+router.use((req, res, next) => {
+  if(!req.query.guild){
+    res.sendStatus(403)
+    return false
+  }
+
+  if(!canEditGuild(req, String(req.query.guild))){
+    res.sendStatus(403)
+    return false
+  }
+  next()
+})
+
+const canEditGuild = (req : Request, guildId : string) : boolean => {
+  if(!guildId) return false
+  if(!req.session.guilds) return false
+  let guilds = req.session.guilds
+
+  const user_guilds = guilds.filter(guild => {
+    let permission = new Permissions(BigInt(guild.permissions))
+    return permission.has(Permissions.FLAGS.MANAGE_GUILD)}
+  ).map(guild => {return guild.id})
+
+  if(user_guilds.includes(guildId))
+    return true
+
+  return false
+}
+
+
+export default router

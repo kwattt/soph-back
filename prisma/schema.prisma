@@ -16,7 +16,7 @@ model autochannels {
 
 model guilds {
   id       Int    @id @default(autoincrement())
-  guild    String @db.VarChar
+  guild    String @db.VarChar @unique
   welcome  String @db.VarChar
   birthday String @db.VarChar
   stalk    Int

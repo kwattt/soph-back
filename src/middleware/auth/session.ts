@@ -20,8 +20,8 @@ const redisSession = session({
 
 declare module 'express-session' {
   interface SessionData {
-      access: RESTPostOAuth2AccessTokenResult;
-      user: APIUser,
+      access: RESTPostOAuth2AccessTokenResult
+      user: APIUser
       guilds: RESTGetAPICurrentUserGuildsResult
   }
 }

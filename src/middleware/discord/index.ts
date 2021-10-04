@@ -3,7 +3,7 @@ import {Router} from 'express'
 
 var LOADED_CLIENT = false
 
-const client = new Client({
+export const client = new Client({
   intents: 
           [
             Intents.FLAGS.GUILDS,

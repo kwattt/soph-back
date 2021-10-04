@@ -4,7 +4,6 @@ import {APIUser, RESTGetAPICurrentUserGuildsResult} from 'discord-api-types';
 // NEEDS REFACTOR AND ERROR HANDLING..
 
 export const API_getGuilds = async (token : string) : Promise<RESTGetAPICurrentUserGuildsResult | 'err'>  => {
-  console.log('calling API')
   try {
     const responseGuild : AxiosResponse<RESTGetAPICurrentUserGuildsResult> = await axios.get('https://discord.com/api/v8/users/@me/guilds',
     {
@@ -27,7 +26,6 @@ export const API_getGuilds = async (token : string) : Promise<RESTGetAPICurrentU
 }
 
 export const API_getUser = async (token : string) : Promise<APIUser | 'err'>  => {
-
   try {
     const responseUser : AxiosResponse<APIUser> = await axios.get('https://discord.com/api/v8/users/@me',
     {
