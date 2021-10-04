@@ -4,11 +4,12 @@ import cors from 'cors';
 import redisSession from "./middleware/auth/session";
 import rest from './routes'
 import discord from './middleware/discord'
+import body from './middleware/body'
 
 const corsapp = cors();
 const app = express();
 
-app.use(express.json())
+app.use(body)
 app.use(corsapp);
 app.use(redisSession)
 app.use(discord)

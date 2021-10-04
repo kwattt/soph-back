@@ -1,9 +1,26 @@
 import {Router, Request} from 'express'
+import { PrismaClient } from '@prisma/client'
 import {Permissions} from 'discord.js'
 
-const router = Router()
+export const guildAccess = Router()
+export const guildExists = Router()
+const prisma = new PrismaClient();
 
-router.use((req, res, next) => {
+guildExists.use( async (req, res, next) => {
+  var result = await prisma.guilds.findUnique({
+    where: {
+      guild: String(req.query.guild),
+    },
+  })
+  if(!result){
+    res.sendStatus(404)
+    return false
+  }
+
+  next()
+})
+
+guildAccess.use( async (req, res, next) => {
   if(!req.query.guild){
     res.sendStatus(403)
     return false
@@ -13,6 +30,8 @@ router.use((req, res, next) => {
     res.sendStatus(403)
     return false
   }
+
+
   next()
 })
 
@@ -31,6 +50,3 @@ const canEditGuild = (req : Request, guildId : string) : boolean => {
 
   return false
 }
-
-
-export default router
