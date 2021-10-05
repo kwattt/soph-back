@@ -8,6 +8,7 @@ const router = Router()
 const prisma = new PrismaClient();
 
 router.use(guildAccess)
+
 router.get('/getGuild', async (req, res) => {
   const {guild} = req.query
 

@@ -30,8 +30,6 @@ guildAccess.use( async (req, res, next) => {
     res.sendStatus(403)
     return false
   }
-
-
   next()
 })
 

@@ -20,7 +20,7 @@ model guilds {
   welcome  String @db.VarChar
   birthday String @db.VarChar
   stalk    Int
-  bdaymsg  String @db.VarChar
+  bdaymsg  String @db.VarChar(350)
   bdayutc  Int
   type     Int
   prefix   String @db.VarChar
@@ -117,5 +117,5 @@ model welcomes {
   id    Int    @id @default(autoincrement())
   guild String @db.VarChar
   type  Int
-  msg   String @db.VarChar
+  msg   String @db.VarChar(200)
 }

@@ -20,7 +20,7 @@ router.post('/updateMessages', async (req, res) => {
 
   if(Array.isArray(messages))
   {
-    if(messages.every(msg => { return is<Message>(msg) })){
+    if(messages.every(msg => { return (is<Message>(msg) && msg?.msg?.length < 200) })){
       await prisma.welcomes.deleteMany({
         where: {
           guild: String(guild)
