@@ -9,31 +9,31 @@ const prisma = new PrismaClient();
 router.use(guildAccess)
 router.use(guildExists)
 
-interface Birthday {
-  birthday: string
-  bdaymsg: string
-  bdayutc: number
+interface Purge {
+  channel: string
+  hour: number
+  minute: number
+  utc: number
 }
 
-router.post('/updateBirthday', async (req, res) => {
+router.post('/updatePurge', async (req, res) => {
   const {guild} = req.query
-  const bday = req.body
+  const data = req.body
 
-  if(is<Birthday>(bday)){
-    if(bday.bdaymsg.length < 359 && bday.birthday.length < 30)
-      await prisma.guilds.update({
-        where: {
-          guild: String(guild)
-        },
-        data: bday
-      })
+  if(is<Purge[]>(data)){
+    if(data.every(purge => {purge.channel.length < 30 })){
+      // delete all
+
+      // insermany
+      
       res.sendStatus(200)
-    return
+      return
+    }
   }
   res.sendStatus(400)
 })
 
-router.get('/birthday', async (req, res) => {
+router.get('/purge', async (req, res) => {
   const {guild} = req.query
 
   const data = await prisma.guilds.findUnique({

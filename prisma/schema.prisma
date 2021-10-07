@@ -10,27 +10,27 @@ datasource db {
 model autochannels {
   id            Int    @id @default(autoincrement())
   guild         String @db.VarChar
-  origenchannel String @db.VarChar
-  targetchannel String @db.VarChar
+  origenchannel String @db.VarChar(30)
+  targetchannel String @db.VarChar(30)
 }
 
 model guilds {
   id       Int    @id @default(autoincrement())
   guild    String @db.VarChar @unique
-  welcome  String @db.VarChar
-  birthday String @db.VarChar
+  welcome  String @db.VarChar(30)
+  birthday String @db.VarChar(30)
   stalk    Int
-  bdaymsg  String @db.VarChar(350)
+  bdaymsg  String @db.VarChar(600)
   bdayutc  Int
   type     Int
-  prefix   String @db.VarChar
+  prefix   String @db.VarChar(10)
   levels   Int
 }
 
 model levelchannels {
   id      Int    @id @default(autoincrement())
   guild   String @db.VarChar
-  channel String @db.VarChar
+  channel String @db.VarChar(30)
 }
 
 model levels {
@@ -61,13 +61,13 @@ model msgcustoms {
 model oraculos {
   id    Int    @id @default(autoincrement())
   guild String @db.VarChar
-  msg   String @db.VarChar
+  msg   String @db.VarChar(500)
 }
 
 model purges {
   id      Int    @id @default(autoincrement())
   guild   String @db.VarChar
-  channel String @db.VarChar
+  channel String @db.VarChar(30)
   hour    Int
   minute  Int
   utc     Int
@@ -76,9 +76,9 @@ model purges {
 model shops {
   id      Int    @id @default(autoincrement())
   guild   String @db.VarChar
-  name    String @db.VarChar
-  role    String @db.VarChar
-  channel String @db.VarChar
+  name    String @db.VarChar(120)
+  role    String @db.VarChar(30)
+  channel String @db.VarChar(30)
   price   Int
   type    Int
 }
@@ -86,24 +86,24 @@ model shops {
 model socials {
   id          Int    @id @default(autoincrement())
   guild       String @db.VarChar
-  channel     String @db.VarChar
-  name        String @db.VarChar
+  channel     String @db.VarChar(30)
+  name        String @db.VarChar(50)
   last_update String @db.VarChar
   live        Int
   type        Int
-  real_name   String @db.VarChar
+  real_name   String @db.VarChar(50)
 }
 
 model stalkmsgs {
   id    Int    @id @default(autoincrement())
   guild String @db.VarChar
-  msg   String @db.VarChar
+  msg   String @db.VarChar(250)
 }
 
 model stalkroles {
   id    Int    @id @default(autoincrement())
   guild String @db.VarChar
-  role  String @db.VarChar
+  role  String @db.VarChar(35)
 }
 
 model users {
