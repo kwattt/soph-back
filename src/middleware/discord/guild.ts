@@ -1,5 +1,5 @@
 import {Router, Request} from 'express'
-import { PrismaClient } from '@prisma/client'
+import {PrismaClient } from '@prisma/client'
 import {Permissions} from 'discord.js'
 
 export const guildAccess = Router()

@@ -3,6 +3,8 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
+import client from './../../../discord/'
+import { Guild } from 'discord.js'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -50,14 +52,51 @@ router.get('/top', async (req, res) => {
       xp: true,
       level: true
     },
-    orderBy: {
-      level: "desc",
-      xp: "desc"
-    },
+    orderBy: [
+      {level: "desc"},
+      {xp: "desc"}
+    ],
     take: 50
-  }) 
+  })
 
-  res.send({levels: levels})
+  /*
+
+  */
+
+  const jsguild = client.guilds.cache.get(String(guild))
+
+  const parsed = await Promise.all(
+    levels.map(async level => {
+      let user = jsguild?.members.cache.get(level.uid);
+      
+      if(!user){
+        try {
+        
+          await jsguild?.members.fetch(level.uid).then(res => {
+            user = res
+          })
+        }
+        catch (err) {
+          // not found
+        }
+      }
+
+      let nickname = user ? user.displayName : 'Gone :('
+
+      return {
+        name: nickname,
+        points: level.points,
+        xp: level.xp,
+        level: level.level
+      }
+
+    })
+  );
+
+
+  console.log('send')
+
+  res.send({levels: parsed}) 
 })
 
 router.get('/levels', async (req, res) => {

@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import messages from './messages.json'
-import {client} from './../../../middleware/discord'
+import client from './../../../discord'
 
 const router = Router()
 
