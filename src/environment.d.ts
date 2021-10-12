@@ -13,6 +13,8 @@ declare global {
       REDIS_PORT: string
       
       APP_ENV: string
+
+      YOUTUBE_API_KEY: string
     }
   }
 }

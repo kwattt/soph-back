@@ -59,19 +59,15 @@ router.get('/top', async (req, res) => {
     take: 50
   })
 
-  /*
-
-  */
 
   const jsguild = client.guilds.cache.get(String(guild))
 
   const parsed = await Promise.all(
     levels.map(async level => {
       let user = jsguild?.members.cache.get(level.uid);
-      
+
       if(!user){
         try {
-        
           await jsguild?.members.fetch(level.uid).then(res => {
             user = res
           })
@@ -92,9 +88,6 @@ router.get('/top', async (req, res) => {
 
     })
   );
-
-
-  console.log('send')
 
   res.send({levels: parsed}) 
 })

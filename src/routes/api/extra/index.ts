@@ -14,6 +14,11 @@ router.get('/stats', (req, res) => {
   })
 })
 
+router.get('/test', (req, res) => {
+  
+})
+
+
 const updateStats = () => {
   guildCount = client.guilds.cache.size
   memberCount = client.guilds.cache.map((g) => g.memberCount).reduce((a, c) => a + c)

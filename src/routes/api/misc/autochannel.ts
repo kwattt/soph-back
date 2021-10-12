@@ -9,28 +9,26 @@ const prisma = new PrismaClient();
 router.use(guildAccess)
 router.use(guildExists)
 
-interface Purge {
-  channel: string
-  hour: number
-  minute: number
-  utc: number
+interface Autochannel {
+  origenchannel: string
+  targetchannel: string
 }
 
-router.post('/updatePurge', async (req, res) => {
+router.post('/updateAutochannel', async (req, res) => {
   const {guild} = req.query
   const data = req.body
 
-  if(is<Purge[]>(data)){
-    if(data.every(purge => {purge.channel.length < 30 })){
+  if(is<Autochannel[]>(data)){
+    if(data.every(ach => {ach.origenchannel.length < 30 && ach.targetchannel.length < 30})){
 
-      await prisma.purges.deleteMany({
+      await prisma.autochannels.deleteMany({
         where: {
           guild: String(guild)
         }
       })
 
-      let pdata = data.map(purge => { return {...purge, guild: String(guild)}})
-      await prisma.purges.createMany({
+      let pdata = data.map(ach => { return {...ach, guild: String(guild)}})
+      await prisma.autochannels.createMany({
         data: pdata
       })
 
@@ -41,18 +39,16 @@ router.post('/updatePurge', async (req, res) => {
   res.sendStatus(400)
 })
 
-router.get('/purge', async (req, res) => {
+router.get('/autochannel', async (req, res) => {
   const {guild} = req.query
 
-  const data = await prisma.purges.findMany({
+  const data = await prisma.autochannels.findMany({
     where: {
       guild: String(guild)
     },
     select: {
-      channel: true,
-      hour: true,
-      minute: true,
-      utc: true,
+      origenchannel: true,
+      targetchannel: true
     }
   })
 

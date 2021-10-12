@@ -9,28 +9,25 @@ const prisma = new PrismaClient();
 router.use(guildAccess)
 router.use(guildExists)
 
-interface Purge {
-  channel: string
-  hour: number
-  minute: number
-  utc: number
+interface Oraculo {
+  msg: string
 }
 
-router.post('/updatePurge', async (req, res) => {
+router.post('/updateOraculo', async (req, res) => {
   const {guild} = req.query
   const data = req.body
 
-  if(is<Purge[]>(data)){
-    if(data.every(purge => {purge.channel.length < 30 })){
+  if(is<Oraculo[]>(data)){
+    if(data.every(ach => {ach.msg.length < 500})){
 
-      await prisma.purges.deleteMany({
+      await prisma.oraculos.deleteMany({
         where: {
           guild: String(guild)
         }
       })
 
-      let pdata = data.map(purge => { return {...purge, guild: String(guild)}})
-      await prisma.purges.createMany({
+      let pdata = data.map(ach => { return {...ach, guild: String(guild)}})
+      await prisma.oraculos.createMany({
         data: pdata
       })
 
@@ -41,18 +38,15 @@ router.post('/updatePurge', async (req, res) => {
   res.sendStatus(400)
 })
 
-router.get('/purge', async (req, res) => {
+router.get('/oraculo', async (req, res) => {
   const {guild} = req.query
 
-  const data = await prisma.purges.findMany({
+  const data = await prisma.oraculos.findMany({
     where: {
       guild: String(guild)
     },
     select: {
-      channel: true,
-      hour: true,
-      minute: true,
-      utc: true,
+      msg: true,
     }
   })
 

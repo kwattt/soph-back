@@ -7,33 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model autochannels {
+model autochannels { // ✅
   id            Int    @id @default(autoincrement())
   guild         String @db.VarChar
-  origenchannel String @db.VarChar(30)
-  targetchannel String @db.VarChar(30)
+  origenchannel String @db.VarChar(31)
+  targetchannel String @db.VarChar(31)
 }
 
-model guilds {
+model guilds { // ✅
   id       Int    @id @default(autoincrement())
   guild    String @db.VarChar @unique
-  welcome  String @db.VarChar(30)
-  birthday String @db.VarChar(30)
+  welcome  String @db.VarChar(31)
+  birthday String @db.VarChar(31)
   stalk    Int
-  bdaymsg  String @db.VarChar(600)
+  bdaymsg  String @db.VarChar(601)
   bdayutc  Int
   type     Int
-  prefix   String @db.VarChar(10)
+  prefix   String @db.VarChar(11)
   levels   Int
 }
 
-model levelchannels {
+model levelchannels { // ✅
   id      Int    @id @default(autoincrement())
   guild   String @db.VarChar
-  channel String @db.VarChar(30)
+  channel String @db.VarChar(31)
 }
 
-model levels {
+model levels { // ✅
   id     Int    @id @default(autoincrement())
   guild  String @db.VarChar
   uid    String @db.VarChar
@@ -50,35 +50,35 @@ model logs {
   description String @db.VarChar
 }
 
-model msgcustoms {
+model msgcustoms { // ✅
   id      Int    @id @default(autoincrement())
   time    Int
   guild   String @db.VarChar
-  name    String @db.VarChar(50)
-  message String @db.VarChar(500)
+  name    String @db.VarChar(51)
+  message String @db.VarChar(501)
 }
 
-model oraculos {
+model oraculos { // ✅
   id    Int    @id @default(autoincrement())
   guild String @db.VarChar
-  msg   String @db.VarChar(500)
+  msg   String @db.VarChar(501)
 }
 
-model purges {
+model purges { // ✅
   id      Int    @id @default(autoincrement())
   guild   String @db.VarChar
-  channel String @db.VarChar(30)
+  channel String @db.VarChar(31)
   hour    Int
   minute  Int
   utc     Int
 }
 
-model shops {
+model shops { // ✅
   id      Int    @id @default(autoincrement())
   guild   String @db.VarChar
-  name    String @db.VarChar(120)
-  role    String @db.VarChar(30)
-  channel String @db.VarChar(30)
+  name    String @db.VarChar(121)
+  role    String @db.VarChar(31)
+  channel String @db.VarChar(31)
   price   Int
   type    Int
 }
@@ -86,36 +86,37 @@ model shops {
 model socials {
   id          Int    @id @default(autoincrement())
   guild       String @db.VarChar
-  channel     String @db.VarChar(30)
-  name        String @db.VarChar(50)
+  platform    String @db.VarChar
+  channel     String @db.VarChar(31)
+  name        String @db.VarChar(51)
   last_update String @db.VarChar
   live        Int
   type        Int
-  real_name   String @db.VarChar(50)
+  real_name   String @db.VarChar(51)
 }
 
-model stalkmsgs {
+model stalkmsgs { // ✅
   id    Int    @id @default(autoincrement())
   guild String @db.VarChar
   msg   String @db.VarChar(250)
 }
 
-model stalkroles {
+model stalkroles { // ✅
   id    Int    @id @default(autoincrement())
   guild String @db.VarChar
-  role  String @db.VarChar(35)
+  role  String @db.VarChar(36)
 }
 
-model users {
+model users { // ✅
   id    Int    @id @default(autoincrement())
-  uid   String @db.VarChar
+  uid   String @db.VarChar @unique
   month Int
   day   Int
 }
 
-model welcomes {
+model welcomes { // ✅
   id    Int    @id @default(autoincrement())
   guild String @db.VarChar
   type  Int
-  msg   String @db.VarChar(200)
+  msg   String @db.VarChar(201)
 }
