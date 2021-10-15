@@ -83,7 +83,13 @@ model shops { // ✅
   type    Int
 }
 
-model socials {
+// youtube ✅
+// twitter ✅
+// facebook ✅
+// twitch ✅
+// redit ⚠️
+
+model socials { // ✅
   id          Int    @id @default(autoincrement())
   guild       String @db.VarChar
   platform    String @db.VarChar

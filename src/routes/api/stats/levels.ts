@@ -4,7 +4,6 @@ import { is } from 'typescript-is'
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
 import client from './../../../discord/'
-import { Guild } from 'discord.js'
 
 const router = Router()
 const prisma = new PrismaClient();

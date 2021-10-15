@@ -3,7 +3,6 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
-import youtube from '../../../middleware/youtube'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -11,50 +10,23 @@ const prisma = new PrismaClient();
 router.use(guildAccess)
 router.use(guildExists)
 
-const getChannelData = async (channelId: string) => {
-  if(!channelId) return undefined
-
-  const res = await youtube.channels.list({
-    id: [channelId],
-    part: ['contentDetails,snippet'],
-  })
-
-  return res.data.items
-}
-
-router.post('/verifyChannel', async (req, res) => { 
-  const {channelId} = req.body
-
-  const items =  await getChannelData(String(channelId))
-
-  if(items){
-    res.send({
-      channelName: items[0].snippet?.title
-    })
-    return
-  }
-
-  res.sendStatus(404)
-})
-
-interface Youtube {
+interface Twitch {
   channel:  string
   name: string
   type: number
-  real_name: string
 }
 
-router.get('/updateYoutube', async (req, res) => {
+router.get('/updateTwitch', async (req, res) => {
   const {guild} = req.query
   const data = req.body
 
-  if(is<Youtube[]>(data)){
-    if(data.every(m => {m.channel.length < 30 && m.name.length < 50 && m.real_name.length < 50})){
+  if(is<Twitch[]>(data)){
+    if(data.every(m => {m.channel.length < 30 && m.name.length < 50})){
 
       await prisma.socials.deleteMany({
         where: {
           guild: String(guild),
-          platform: "youtube"
+          platform: "twitch"
         }
       })
 
@@ -64,7 +36,8 @@ router.get('/updateYoutube', async (req, res) => {
           guild: String(guild),
           live: 0,
           last_update: "0",
-          platform: "youtube"
+          platform: "twitch",
+          real_name: ""
         }
       })
 
@@ -82,13 +55,13 @@ router.get('/updateYoutube', async (req, res) => {
   res.sendStatus(400)
 })
 
-router.get('/youtube', async (req, res) => {
+router.get('/twitch', async (req, res) => {
   const {guild} = req.query
 
   const channels = await prisma.socials.findMany({
     where: {
       guild: String(guild),
-      platform: 'youtube'
+      platform: 'twitch'
     },
     select: {
       channel: true,
