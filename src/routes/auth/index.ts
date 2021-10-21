@@ -12,7 +12,7 @@ router.get('/redirect', async (req, res) => {
   const session = req.session;
 
   if(session.access){
-    res.redirect('/')
+    res.redirect(process.env.APP_FRONT_URL!)
     return
   }
   const { code } = req.query
@@ -50,7 +50,7 @@ router.get('/redirect', async (req, res) => {
       }
       session.user = tuser
 
-      res.redirect('/')
+      res.redirect(process.env.APP_FRONT_URL!)
       return
 
     } catch (err) {
@@ -59,7 +59,7 @@ router.get('/redirect', async (req, res) => {
     }
   }
   else {
-    res.redirect('/')
+    res.redirect(process.env.APP_FRONT_URL!)
     return
   }  
 })
@@ -75,7 +75,7 @@ router.get('/revoke', async (req, res) => {
       console.log('error:', err)
     }
   })
-  res.sendStatus(200)
+  res.redirect(process.env.APP_FRONT_URL!)
 })
 
 export default router

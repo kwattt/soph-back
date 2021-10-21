@@ -4,6 +4,15 @@ import {Router} from 'express'
 const router = Router()
 const prisma = new PrismaClient();
 
+type User = {
+  id: string,
+  username: string,
+  discriminator: string,
+  avatar: string | undefined,
+  banner: string | undefined,
+  month: number | undefined,
+  day: number | undefined,
+}
 
 router.get('/info', async (req, res) => {
   let user = req.session.user

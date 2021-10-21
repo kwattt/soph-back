@@ -15,6 +15,8 @@ declare global {
       APP_ENV: string
 
       YOUTUBE_API_KEY: string
+
+      APP_FRONT_URL: string
     }
   }
 }
