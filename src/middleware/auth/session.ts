@@ -9,6 +9,7 @@ const redisSession = session({
   store: new RedisStore({ client: redisClient }),
   secret: process.env.COOKIE_SECRET || "undefined_secret",
   resave: false,
+  name: "session-1",
   saveUninitialized: false,
   cookie: {
       sameSite: 'lax',

@@ -2,6 +2,9 @@ require('dotenv').config();
 
 import express from "express";
 import cors from 'cors';
+import helmet from 'helmet'
+import compression from 'compression'
+
 import redisSession from "./middleware/auth/session";
 import rest from './routes'
 import discord from './middleware/discord'
@@ -21,6 +24,8 @@ const corsapp = cors({
 
 const app = express()
 
+app.use(compression())
+app.use(helmet())
 app.use(body)
 app.use(corsapp)
 app.use(redisSession)
