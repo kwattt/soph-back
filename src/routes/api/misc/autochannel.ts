@@ -19,7 +19,7 @@ router.post('/updateAutochannel', async (req, res) => {
   const data = req.body
 
   if(is<Autochannel[]>(data)){
-    if(data.every(ach => {ach.origenchannel.length < 30 && ach.targetchannel.length < 30})){
+    if(data.every(ach => ach.origenchannel.length < 30 && ach.targetchannel.length < 30)){
 
       await prisma.autochannels.deleteMany({
         where: {

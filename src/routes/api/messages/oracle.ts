@@ -18,8 +18,7 @@ router.post('/updateOraculo', async (req, res) => {
   const data = req.body
 
   if(is<Oraculo[]>(data)){
-    if(data.every(ach => {ach.msg.length < 500})){
-
+    if(data.every(ach => ach.msg.length < 500)){
       await prisma.oraculos.deleteMany({
         where: {
           guild: String(guild)

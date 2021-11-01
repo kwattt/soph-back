@@ -21,7 +21,7 @@ router.post('/updatePurge', async (req, res) => {
   const data = req.body
 
   if(is<Purge[]>(data)){
-    if(data.every(purge => {purge.channel.length < 30 })){
+    if(data.every(purge => purge.channel.length < 30)){
 
       await prisma.purges.deleteMany({
         where: {

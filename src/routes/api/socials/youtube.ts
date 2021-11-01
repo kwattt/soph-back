@@ -49,7 +49,7 @@ router.get('/updateYoutube', async (req, res) => {
   const data = req.body
 
   if(is<Youtube[]>(data)){
-    if(data.every(m => {m.channel.length < 30 && m.name.length < 50 && m.real_name.length < 50})){
+    if(data.every(m => m.channel.length < 30 && m.name.length < 50 && m.real_name.length < 50)){
 
       await prisma.socials.deleteMany({
         where: {

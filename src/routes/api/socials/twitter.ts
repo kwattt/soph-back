@@ -21,7 +21,7 @@ router.get('/updateTwitter', async (req, res) => {
   const data = req.body
 
   if(is<Twitter[]>(data)){
-    if(data.every(m => {m.channel.length < 30 && m.name.length < 50})){
+    if(data.every(m => m.channel.length < 30 && m.name.length < 50)){
 
       await prisma.socials.deleteMany({
         where: {
