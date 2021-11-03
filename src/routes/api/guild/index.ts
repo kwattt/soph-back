@@ -3,6 +3,7 @@ import {Router} from 'express'
 import {guildExists, guildAccess} from './../../../middleware/discord/guild'
 
 import { PrismaClient } from '@prisma/client'
+import { Limits } from '../../../limits'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -29,10 +30,13 @@ router.get('/getGuild', async (req, res) => {
           bdayutc: -5,
           type: 0,
           prefix: '!',
-          levels: 0
-        }
+          levels: 0,
+        } 
       })
-    res.send(result)  
+
+    res.send({...result,
+      limits: result.type === 0 ? Limits[0] : Limits[1]
+    })  
     return
 })
 

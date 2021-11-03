@@ -3,6 +3,7 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
+import { Limits } from '../../../limits'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -18,7 +19,11 @@ router.post('/updateOraculo', async (req, res) => {
   const data = req.body
 
   if(is<Oraculo[]>(data)){
-    if(data.every(ach => ach.msg.length < 500)){
+
+    if(data.length > Limits[req.guild_type].oraculo)
+      return res.sendStatus(400)
+
+    if(data.every(ach => ach.msg.length <= 200)){
       await prisma.oraculos.deleteMany({
         where: {
           guild: String(guild)

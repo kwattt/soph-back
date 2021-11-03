@@ -17,6 +17,10 @@ guildExists.use( async (req, res, next) => {
     return false
   }
 
+  req.guild_type = result.type === 1 ? 1 : 0
+
+  console.log(req.guild_type)
+
   next()
 })
 

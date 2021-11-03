@@ -13,7 +13,8 @@ router.use((req, res, next) => {
 declare global {
   namespace Express {
     interface Request {
-      client: Client
+      client: Client,
+      guild_type: 0 | 1
     }
   }
 }

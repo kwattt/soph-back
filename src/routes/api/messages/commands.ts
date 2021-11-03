@@ -43,7 +43,7 @@ router.get('/commands', async (req, res) => {
   const data = await prisma.msgcustoms.findMany({
     where: {
       guild: String(guild)
-    },
+    }, 
     select: {
       name: true,
       message: true,
