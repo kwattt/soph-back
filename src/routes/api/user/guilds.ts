@@ -52,9 +52,6 @@ router.get('/guilds', async (req, res) => {
       }
       else return undefined
     })
-
-    console.log(req.guild_type)
-
     res.send(guild_results)
     return
   }
