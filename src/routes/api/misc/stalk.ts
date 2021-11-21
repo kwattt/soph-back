@@ -3,6 +3,7 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
+import { Limits } from '../../../limits'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -17,10 +18,14 @@ interface Stalk {
 
 router.post('/updateStalk', async (req, res) => {
   const {guild} = req.query
-
   const data = req.body
 
   if(is<Stalk>(data)){
+    if(data.messages.length > Limits[req.guild_type].stalkmsg)
+    {
+      return res.sendStatus(400)
+    }
+
     if(data.roles.every(role => role.length < 30)
     && data.messages.every(msg => msg.length < 250))
     {
@@ -77,7 +82,7 @@ router.get('/stalk', async (req, res) => {
     }
   })
 
-  res.send({roles: data, messages: data2})
+  res.send({roles: data.map(r => r.role), messages: data2.map(r => r.msg)})
 })
 
 export default router

@@ -3,6 +3,7 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
+import { Limits } from '../../../limits'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -16,19 +17,22 @@ interface Message {
 
 router.post('/updateWelcome', async (req, res) => {
   const {guild} = req.query
-  const {messages} = req.body
+  const data = req.body
 
-  if(Array.isArray(messages))
-  {
-    if(messages.every(msg => { return (is<Message>(msg) && msg?.msg?.length < 200) })){
+  if(is<Message[]>(data)){
+    if(data.length > Limits[req.guild_type].welcome)
+    {
+      return res.sendStatus(400)
+    }
+    if(data.every(ach => ach.msg.length <= 201)){
       await prisma.welcomes.deleteMany({
         where: {
           guild: String(guild)
         }
       })
-      const data = messages.map(msg => {return {...msg, guild: String(guild)}})
+      const vals = data.map(msg => {return {...msg, guild: String(guild)}})
       await prisma.welcomes.createMany({
-        data: data
+        data: vals
       })
       res.sendStatus(200)
       return

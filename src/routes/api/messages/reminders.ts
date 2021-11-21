@@ -4,23 +4,29 @@ import { is } from 'typescript-is'
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
 
+import { Limits } from '../../../limits'
+
 const router = Router()
 const prisma = new PrismaClient();
 
 router.use(guildAccess)
 router.use(guildExists)
 
-interface Commands {
+interface Reminders {
   name: string
   message: string
 }
 
-router.post('/updateCommands', async (req, res) => {
+router.post('/updateReminders', async (req, res) => {
   const {guild} = req.query
   const data = req.body
 
-  if(is<Commands[]>(data)){
-    if(data.every(cmd => cmd.message.length < 500 && cmd.name.length < 50)){
+  if(is<Reminders[]>(data)){
+
+    if(data.length > Limits[req.guild_type].autochannel)
+      return res.sendStatus(400)
+
+    if(data.every(cmd => cmd.message.length < 501 && cmd.name.length < 51)){
       await prisma.msgcustoms.deleteMany({
         where: {
           guild: String(guild)
@@ -37,7 +43,7 @@ router.post('/updateCommands', async (req, res) => {
   res.sendStatus(400)
 })
 
-router.get('/commands', async (req, res) => {
+router.get('/reminders', async (req, res) => {
   const {guild} = req.query
 
   const data = await prisma.msgcustoms.findMany({
