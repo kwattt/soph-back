@@ -3,6 +3,7 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
+import { Limits } from '../../../limits'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -16,11 +17,16 @@ interface Twitch {
   type: number
 }
 
-router.get('/updateTwitch', async (req, res) => {
+router.post('/updateTwitch', async (req, res) => {
   const {guild} = req.query
   const data = req.body
 
   if(is<Twitch[]>(data)){
+    if(data.length > Limits[req.guild_type].socials)
+    {
+      return res.sendStatus(400)
+    }
+
     if(data.every(m => m.channel.length < 30 && m.name.length < 50)){
 
       await prisma.socials.deleteMany({
@@ -73,7 +79,7 @@ router.get('/twitch', async (req, res) => {
     }
   })
 
-  return channels
+  res.send(channels)
 })
 
 export default router
