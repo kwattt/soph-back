@@ -22,21 +22,6 @@ const getChannelData = async (channelId: string) => {
   return res.data.items
 }
 
-router.post('/verifyChannel', async (req, res) => { 
-  const {channelId} = req.body
-
-  const items =  await getChannelData(String(channelId))
-
-  if(items){
-    res.send({
-      channelName: items[0].snippet?.title
-    })
-    return
-  }
-
-  res.sendStatus(404)
-})
-
 interface Youtube {
   channel:  string
   name: string
@@ -44,7 +29,19 @@ interface Youtube {
   real_name: string
 }
 
-router.get('/updateYoutube', async (req, res) => {
+router.post('/verifyChannel', async (req, res) => { 
+  const {channelId} = req.body
+
+  const items =  await getChannelData(String(channelId))
+  if(items){
+    res.send({
+      channelName: items[0].snippet?.title
+    })
+  }
+  else res.sendStatus(404)
+})
+
+router.post('/updateYoutube', async (req, res) => {
   const {guild} = req.query
   const data = req.body
 
@@ -100,7 +97,7 @@ router.get('/youtube', async (req, res) => {
     }
   })
 
-  return channels
+  res.send(channels)
 })
 
 export default router

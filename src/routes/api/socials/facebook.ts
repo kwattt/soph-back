@@ -16,7 +16,7 @@ interface Facebook {
   type: number
 }
 
-router.get('/updateFacebook', async (req, res) => {
+router.post('/updateFacebook', async (req, res) => {
   const {guild} = req.query
   const data = req.body
 
@@ -73,7 +73,7 @@ router.get('/facebook', async (req, res) => {
     }
   })
 
-  return channels
+  res.send(channels)
 })
 
 export default router
