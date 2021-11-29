@@ -3,6 +3,7 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
+import { Limits } from '../../../limits'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -21,6 +22,11 @@ router.post('/updatePurge', async (req, res) => {
   const data = req.body
 
   if(is<Purge[]>(data)){
+    if(data.length > Limits[req.guild_type].purge)
+    {
+      return res.sendStatus(400)
+    }
+
     if(data.every(purge => purge.channel.length < 30)){
 
       await prisma.purges.deleteMany({

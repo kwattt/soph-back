@@ -3,6 +3,7 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
+import { Limits } from '../../../limits'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -19,6 +20,11 @@ router.post('/updateAutochannel', async (req, res) => {
   const data = req.body
 
   if(is<Autochannel[]>(data)){
+    if(data.length > Limits[req.guild_type].autochannel)
+    {
+      return res.sendStatus(400)
+    }
+
     if(data.every(ach => ach.origenchannel.length < 30 && ach.targetchannel.length < 30)){
 
       await prisma.autochannels.deleteMany({

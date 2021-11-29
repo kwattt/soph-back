@@ -24,7 +24,7 @@ model guilds { // ✅
   bdayutc  Int
   type     Int
   prefix   String @db.VarChar(11)
-  levels   Int
+  levels   Float
 }
 
 model levelchannels { // ✅

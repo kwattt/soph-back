@@ -21,6 +21,12 @@ router.post('/updateLevels', async (req, res) => {
   const data = req.body
 
   if(is<levelData>(data)){
+
+    if(data.channels.length > 500){
+      res.sendStatus(400)
+      return
+    }
+
     if(data.channels.every(cmd => cmd.length < 30)){
       await prisma.levelchannels.deleteMany({
         where: {
@@ -30,6 +36,15 @@ router.post('/updateLevels', async (req, res) => {
       const vals = data.channels.map(cmd => {return {guild: String(guild), channel: cmd}})
       await prisma.levelchannels.createMany({
         data: vals
+      })
+
+      await prisma.guilds.update({
+        where: { 
+          guild: String(guild)
+        },
+        data: {
+          levels: data.levels
+        }
       })
       res.sendStatus(200)
       return
@@ -58,7 +73,6 @@ router.get('/top', async (req, res) => {
     take: 50
   })
 
-
   const jsguild = client.guilds.cache.get(String(guild))
 
   const parsed = await Promise.all(
@@ -76,7 +90,7 @@ router.get('/top', async (req, res) => {
         }
       }
 
-      let nickname = user ? user.displayName : 'Gone :('
+      let nickname = user ? user.displayName : '~~ Gone :('
 
       return {
         name: nickname,
@@ -112,7 +126,7 @@ router.get('/levels', async (req, res) => {
     }
   })
 
-  res.send({active: active, channels: channels})
+  res.send({levels: active?.levels, channels: channels.map(c => c.channel)})
 
 })
 
