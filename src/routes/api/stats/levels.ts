@@ -102,7 +102,7 @@ router.get('/top', async (req, res) => {
     })
   );
 
-  res.send({levels: parsed}) 
+  res.send(parsed) 
 })
 
 router.get('/levels', async (req, res) => {

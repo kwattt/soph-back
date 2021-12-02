@@ -3,6 +3,7 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
+import { Limits } from '../../../limits'
 
 const router = Router()
 const prisma = new PrismaClient();
@@ -23,6 +24,11 @@ router.post('/updateShop', async (req, res) => {
   const data = req.body
 
   if(is<Shop[]>(data)){
+    if(data.length > Limits[req.guild_type].shops)
+    {
+      return res.sendStatus(400)
+    }
+
     if(data.every(shop => shop.name.length < 120 && shop.role.length < 30 && shop.channel.length < 30)){
       await prisma.shops.deleteMany({
         where: {
