@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 import url from 'url'
 import { RESTPostOAuth2AccessTokenResult } from 'discord-api-types';
 import { API_getGuilds, API_getUser } from './user.service';
 
-const REDIRECT_URI = `https://discord.com/api/oauth2/authorize?client_id=657839781509857302&redirect_uri=${encodeURIComponent(process.env.DISCORD_URI || '')}&response_type=code&scope=identify%20guilds`
+const REDIRECT_URI = `https://discord.com/api/oauth2/authorize?client_id=${process.env.DISCORD_OAUTH_ID}&redirect_uri=${encodeURIComponent(process.env.DISCORD_URI || '')}&response_type=code&scope=identify%20guilds`
 
 const router = Router()
 
@@ -53,10 +53,19 @@ router.get('/redirect', async (req, res) => {
       res.redirect(process.env.APP_FRONT_URL!)
       return
 
-    } catch (err) {
-      console.log('error:', err)
-      res.sendStatus(500)
+    } catch(err){
+      if(axios.isAxiosError(err)){
+        if(err.response){
+          if(err.response.status == 400){
+            res.redirect('/auth/revoke')
+            return
+          }
+        }
+      } else {
+        console.log("Error no identificado", err)
+      }
     }
+
   }
   else {
     res.redirect(process.env.APP_FRONT_URL!)
