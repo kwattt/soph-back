@@ -17,6 +17,8 @@ declare global {
       YOUTUBE_API_KEY: string
 
       APP_FRONT_URL: string
+
+      DEV_GUILD: string
     }
   }
 }
