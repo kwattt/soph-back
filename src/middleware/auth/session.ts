@@ -16,7 +16,7 @@ const redisSession = session({
       secure: process.env.APP_ENV === 'DEV' ? false : true, 
       httpOnly: true,  
       maxAge: 259200000
-  }
+  } 
 })
 
 declare module 'express-session' {

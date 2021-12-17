@@ -1,9 +1,13 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
-import { Interaction, CommandInteraction } from "discord.js"
+import { CommandInteraction } from "discord.js"
 import {Command} from "../../Helpers"
 import messages from "./../../../routes/api/extra/messages.json"
 const wait = require('util').promisify(setTimeout)
 
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient();
+
+/*
 const wawaras: Command = {
   data: new SlashCommandBuilder().setName('wawaras').setDescription("WAWARAS!"),
 
@@ -13,7 +17,7 @@ const wawaras: Command = {
       return
     }
   }
-}
+} */
 
 const useless: Command = {
   data: new SlashCommandBuilder().setName('useless').setDescription("Algo completamente inútil"),
@@ -44,13 +48,11 @@ const google: Command = {
   }
 }
 
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient();
-
 const oraculo: Command = {
   data: new SlashCommandBuilder()
     .setName('oraculo')
     .setDescription("Algo que el oraculo dice, perturbador."),
+
   action: async (interaction: CommandInteraction) => {
     const guild = interaction.guildId
     if(!guild){
@@ -75,4 +77,53 @@ const oraculo: Command = {
   }
 }
 
-export const commands = [wawaras, useless, google, oraculo]
+const ddg: Command = {
+  data: new SlashCommandBuilder()
+            .setName('ddg')
+            .setDescription("Busca en DuckDuckGo")
+            .addStringOption(option => 
+              option.setName('query')
+              .setDescription("La consulta a buscar!")
+              .setRequired(true)
+            ),
+  action: async (interaction: CommandInteraction) => {
+    const query = interaction.options.getString('query')
+    if(query)
+      await interaction.reply(`https://duckduckgo.com/?q=${query}`)
+    else 
+      await interaction.reply("No hay consulta! smh")
+  }
+}
+
+const youtube: Command = {
+  data: new SlashCommandBuilder()
+            .setName('yt')
+            .setDescription("Busca en Youtube")
+            .addStringOption(option => 
+              option.setName('query')
+              .setDescription("La consulta a buscar!")
+              .setRequired(true)
+            ),
+  action: async (interaction: CommandInteraction) => {
+    const query = interaction.options.getString('query')
+    if(query)
+      await interaction.reply(`https://www.youtube.com/results?search_query=${query}`)
+    else 
+      await interaction.reply("No hay consulta! smh")
+  }
+} 
+
+const moneda: Command = {
+  data: new SlashCommandBuilder()
+            .setName('moneda')
+            .setDescription("Tira una moneda"),
+  action: async (interaction: CommandInteraction) => {
+    const result = Math.floor(Math.random() * 2)
+    if(result === 0)
+      await interaction.reply("Ha salido cara!")
+    else
+      await interaction.reply("Ha salido cruz!")
+  }
+}
+
+export const commands = [moneda, youtube, useless, google, ddg, oraculo]
