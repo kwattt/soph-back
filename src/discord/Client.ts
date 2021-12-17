@@ -41,7 +41,10 @@ class ExtClient extends Client {
           for(const event of events) {
             event_count++
             this.events.set(event.name, event)
-            this.on(event.name, event.action.bind(null, this)) 
+            if(event.once)
+              this.once(event.name, event.action.bind(null, this))
+            else
+              this.on(event.name, event.action.bind(null, this)) 
           }
         }
       }
@@ -78,9 +81,9 @@ class ExtClient extends Client {
   } 
 
   public start = async (): Promise<void> => {
-    await this.login(process.env.DISCORD_BOT_TOKEN!)
     await this.loadModules()
     await this.registerCommands()
+    await this.login(process.env.DISCORD_BOT_TOKEN!)
   }
 }
 

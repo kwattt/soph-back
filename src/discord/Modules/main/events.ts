@@ -13,7 +13,6 @@ const commandHandling : Event = {
       console.error(error)
       await interaction.reply({ content: 'Hubo un error al ejecutar este comando :(', ephemeral: true })
     }
-  
   }
 }
 
