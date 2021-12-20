@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders"
-import { CommandInteraction } from "discord.js"
+import { CommandInteraction, MessageEmbed } from "discord.js"
 import {Command} from "../../Helpers"
 import messages from "./../../../routes/api/extra/messages.json"
 const wait = require('util').promisify(setTimeout)
@@ -51,11 +51,14 @@ const google: Command = {
 const oraculo: Command = {
   data: new SlashCommandBuilder()
     .setName('oraculo')
-    .setDescription("Algo que el oraculo dice, perturbador."),
-
+    .setDescription("Algo que el oraculo dice, perturbador.")
+    .addStringOption(option => 
+      option.setName("babosada")
+      .setDescription("La babosada que vas a preguntar.")
+    ),
   action: async (interaction: CommandInteraction) => {
     const guild = interaction.guildId
-    if(!guild){
+    if(!guild || !interaction.inGuild()){
       await interaction.reply("No puedo hacer eso sin un servidor :(")
       return
     }
@@ -73,7 +76,19 @@ const oraculo: Command = {
 
     let response = oraculo.map(oraculo => oraculo.msg)[Math.floor(Math.random() * oraculo.length)]
     response = response.replace(/\{\}/g, `<@${interaction.user.id}>`)
-    await interaction.reply(response)
+
+    let babosada = interaction.options.getString('babosada')
+    if(!babosada){
+      await interaction.reply(response)
+      return 
+    }
+
+    const embed = new MessageEmbed()
+      .setColor("#e87d7d")
+      .setTitle(`${babosada}`)
+      .setDescription(`**Oraculo:** ${response}`)
+    interaction.reply({embeds: [embed]})
+
   }
 }
 

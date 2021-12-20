@@ -88,7 +88,7 @@ const birthday : Event = {
       }
     }
 
-    setInterval(birthdayInterval, 10000);
+    setInterval(birthdayInterval, 60000);
   }
 }
 
