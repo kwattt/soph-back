@@ -16,6 +16,6 @@ client.start().then(() => {
 
 client.once('ready', c => {
 	console.log('Bot cargado correctamente!');
-});
+})
 
 export default client
