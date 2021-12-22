@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { CommandInteraction, MessageEmbed } from 'discord.js'
+import { CommandInteraction, MessageEmbed, TextChannel } from 'discord.js'
 import {Command} from './../../Helpers'
 
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, shops } from '@prisma/client'
 const prisma = new PrismaClient();
 
 const nivel: Command = {
@@ -29,7 +29,7 @@ const nivel: Command = {
     }
 
     const embed = new MessageEmbed()
-      .setTitle(`${interaction.member.user.username} en ${guild.name}`)
+      .setTitle(`${interaction.member.user.username} en ${guild.name}`).setColor('#c48888')
       .setDescription(`**Nivel** ${guildData.level} | **XP** ${guildData.xp} | **Puntos** ${guildData.points} `)
 
     interaction.reply({embeds: [embed]})
@@ -99,7 +99,7 @@ const top: Command = {
     )
 
     const embed = new MessageEmbed()
-      .setColor('#0099ff')
+      .setColor('#c48888')
       .setTitle(`Top de usuarios con mas XP`)
 
     member_data.forEach((member, index) => {
@@ -109,4 +109,138 @@ const top: Command = {
   }
 }
 
-export const commands = [top, nivel]
+const tienda : Command = {
+  data: new SlashCommandBuilder().setName('tienda')
+    .setDescription("Tienda para canjear puntos."),
+  action: async (interaction: CommandInteraction) => {
+    const guild = interaction.guild
+    if(!guild || !interaction.inGuild()){
+      await interaction.reply("No puedo hacer eso sin un servidor :(")
+      return
+    }
+
+    const items = await prisma.shops.findMany({
+      where: {
+        guild: guild.id
+      }
+    })
+
+    if(!items){
+      const embed = new MessageEmbed().setTitle("Tienda").setDescription("No hay tiendas en este servidor!")
+      interaction.reply({embeds: [embed]})
+      return
+    }
+
+    const embed = new MessageEmbed().setTitle("Tienda").setDescription(`Recompensas disponibles de ${guild.name}`).setColor('#c48888')
+
+    items.forEach((item, index) => {
+      embed.addField(`**${index+1}.** ${item.name}`, `Puntos: ${item.price}`)
+    })
+
+    interaction.reply({embeds: [embed]})
+  }
+}
+
+const comprar : Command = {
+  data: new SlashCommandBuilder()
+    .setName('comprar')
+    .setDescription("Comprar un item de la tienda").
+    addIntegerOption(option => 
+      option.setName("item")
+      .setDescription("Indice del item a comprar")
+    )
+,
+  action: async (interaction: CommandInteraction) => {
+    const guild = interaction.guild
+    if(!guild || !interaction.inGuild()){
+      await interaction.reply("No puedo hacer eso sin un servidor :(")
+      return
+    }
+
+    let item_id = interaction.options.getInteger('item')
+    if(!item_id){
+      await interaction.reply("No se especificó el ID del item.")
+      return
+    }
+    item_id -= 1
+
+    const items = await prisma.shops.findMany({
+      where: {
+        guild: guild.id
+      }
+    })
+
+    if(!items){
+      await interaction.reply("No hay tienda en este servidor!")
+      return
+    }
+
+    if (items.length <= item_id) {
+      await interaction.reply("No existe el item con ese ID.")
+      return
+    }
+    const item = items[item_id]
+
+    const user_level = await prisma.levels.findFirst({
+      where: {
+        guild: guild.id,
+        uid: interaction.user.id
+      }
+    })
+
+    if(!user_level){
+      await interaction.reply("No tienes nivel en este servidor!")
+      return
+    }
+
+    if(user_level.points < item.price){
+      await interaction.reply("No tienes suficientes puntos!")
+      return
+    }
+
+    const channel = guild.channels.cache.get(item.channel) as TextChannel
+    if(!channel){
+      await interaction.reply("No se encontró el canal de la tienda!, informar a un administrador.")
+      return
+    }
+    if(typeof channel.send !== 'function') return
+
+    if(item.type === 0) {
+      await channel.send(`${interaction.member.user.username} ha comprado el item ${item.name}!`)
+    } else {
+      if(!guild.me) return await interaction.reply("Curioso, no existo.")
+      if(!guild.me.permissions.has('MANAGE_ROLES')){
+        await interaction.reply("No tengo permisos para editar roles!")
+        return
+      }
+
+      const role = guild.roles.cache.get(item.role)
+      if(!role){
+        await interaction.reply("No se encontró el rol, informar a un administrador.")
+        return
+      }
+
+      const member = guild.members.cache.get(interaction.user.id)
+      if(!member) return
+
+      await member.roles.add(role)
+      await channel.send(`${interaction.member.user.username} ha comprado el item ${item.name}!`)
+    }
+
+    await prisma.levels.updateMany({
+      where: {
+        guild: guild.id,
+        uid: interaction.user.id
+      },
+      data: {
+        points: user_level.points - item.price
+      }
+    })
+
+    await interaction.reply("Compra realizada!")
+
+  }
+}
+
+
+export const commands = [top, nivel, tienda, comprar]

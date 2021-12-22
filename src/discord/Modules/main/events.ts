@@ -1,3 +1,4 @@
+import { DiscordAPIError } from 'discord.js'
 import {Event} from './../../Helpers'
 
 const commandHandling : Event = {
@@ -10,7 +11,14 @@ const commandHandling : Event = {
     try {
       await command.action(interaction)
     } catch (error) {
-      console.error(error)
+      if(error instanceof DiscordAPIError) {
+        if(error.code === 50013) {
+          interaction.reply("No tengo permisos para realizar esta acción! informar al administrador.")
+          return
+        }
+      }
+
+      console.log(error)
       await interaction.reply({ content: 'Hubo un error al ejecutar este comando :(', ephemeral: true })
     }
   }
