@@ -19,6 +19,9 @@ declare global {
       APP_FRONT_URL: string
 
       DEV_GUILD: string
+
+      TWITCH_ID: string
+      TWITCH_SECRET: string
     }
   }
 }

@@ -30,6 +30,7 @@
     "express-session": "^1.17.2",
     "googleapis": "^88.2.0",
     "helmet": "^4.6.0",
+    "node-twitch": "^0.4.5",
     "nodemon": "^2.0.13",
     "prisma": "3.1.1",
     "redis": "^3.1.2",

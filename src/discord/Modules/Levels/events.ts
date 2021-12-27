@@ -22,7 +22,7 @@ const levelHandling : Event = {
 
     const guildInfo = await prisma.guilds.findUnique({
       where: {
-        guild: guildData.id
+          guild: guildData.id,
       },
       select: {
         levels: true

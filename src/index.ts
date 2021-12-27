@@ -43,9 +43,11 @@ app.use(discord)
 
 app.use(rest)
 
-app.use(express.static(path.join(__dirname, '../build')));
+app.use(express.static(path.join(__dirname, '../build')))
 app.use('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../build', 'index.html'));
-});
+  res.sendFile(path.join(__dirname, '../build', 'index.html'))
+})
 
-app.listen(process.env.APP_PORT, () => {console.log('listening on port ' + process.env.APP_PORT);}); 
+app.listen(process.env.APP_PORT, () => {console.log('listening on port ' + process.env.APP_PORT);})
+
+export default app

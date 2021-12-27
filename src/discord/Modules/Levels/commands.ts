@@ -5,6 +5,14 @@ import {Command} from './../../Helpers'
 import { PrismaClient, shops } from '@prisma/client'
 const prisma = new PrismaClient();
 
+
+const BASE_XP = 25
+const XP_RATIO = 1.7 // server s
+const XP_SQRT = 1.45
+
+//const MAX_LENGTH = 50 // + MSG = + XP
+//const MAX_XP = 6
+
 const nivel: Command = {
   data: new SlashCommandBuilder().setName('nivel')
     .setDescription("Tu nivel, coins y experiencia."),
@@ -16,24 +24,29 @@ const nivel: Command = {
     }
 
 
-    const guildData = await prisma.levels.findFirst({
+    const levelData = await prisma.levels.findFirst({
       where: {
         guild: guild.id,
         uid: interaction.user.id,
       }
     })
 
-    if(!guildData){
+    if(!levelData){
       interaction.reply("No tienes nivel en este servidor!")
       return
     }
 
+    const current_xp = Math.floor(levelData.xp / XP_RATIO) - (BASE_XP * Math.pow(levelData.level, XP_SQRT))
+    const target_xp = Math.floor((BASE_XP * Math.pow(levelData.level+1, XP_SQRT)) - BASE_XP * Math.pow(levelData.level, XP_SQRT))
+    const next_level = Math.floor(current_xp * 100 / target_xp)
+
     const embed = new MessageEmbed()
-      .setTitle(`${interaction.member.user.username} en ${guild.name}`).setColor('#c48888')
-      .setDescription(`**Nivel** ${guildData.level} | **XP** ${guildData.xp} | **Puntos** ${guildData.points} `)
+    embed.setAuthor(`${interaction.user.username} en ${guild.name}`)
+    embed.setThumbnail(interaction.user.displayAvatarURL())
+    embed.addField(`Nivel ${levelData.level}`, `${next_level}% para nivel ${levelData.level+1}`, true)
+    embed.addField("Puntos", String(levelData.points), true)
 
     interaction.reply({embeds: [embed]})
-
   }
 }
 
@@ -50,8 +63,7 @@ const top: Command = {
       return
     }
 
-    let page = interaction.options.getInteger('page') 
-    if(!page || page < 1) page = 1
+    let page = interaction.options.getInteger('page') ? interaction.options.getInteger('page') as number: 1 
 
     const top = await prisma.levels.findMany({
       where: {
@@ -71,7 +83,7 @@ const top: Command = {
       skip: (page - 1) * 10
     })
 
-    if(!top) {
+    if(top.length === 0) {
       interaction.reply("No existe este top!")
       return
     }
@@ -93,7 +105,8 @@ const top: Command = {
         return {
           name: nickname,
           xp: level.xp,
-          level: level.level
+          level: level.level,
+          points: level.points
         }
       })
     )
@@ -101,9 +114,18 @@ const top: Command = {
     const embed = new MessageEmbed()
       .setColor('#c48888')
       .setTitle(`Top de usuarios con mas XP`)
+    
+    const imageUrl = guild.iconURL()
+    if(imageUrl)
+      embed.setThumbnail(imageUrl)
 
     member_data.forEach((member, index) => {
-      embed.addField(`${index}. ${member.name}`, `Nivel: ${member.level} | XP: ${member.xp}`)
+      let rindex = (page - 1) * 10 + (index + 1)
+      const current_xp = Math.floor(member.xp / XP_RATIO) - (BASE_XP * Math.pow(member.level, XP_SQRT))
+      const target_xp = Math.floor((BASE_XP * Math.pow(member.level+1, XP_SQRT)) - BASE_XP * Math.pow(member.level, XP_SQRT))
+      const next_level = Math.floor(current_xp * 100 / target_xp)
+
+      embed.addField(`${rindex}. ${member.name}`, `Nivel ${member.level} - ${next_level}% - ${member.points} puntos`, false)
     })
     await interaction.reply({embeds: [embed]})
   }
