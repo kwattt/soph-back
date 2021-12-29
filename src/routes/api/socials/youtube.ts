@@ -3,24 +3,13 @@ import { is } from 'typescript-is'
 
 import {guildAccess, guildExists} from './../../../middleware/discord/guild'
 import { PrismaClient } from '@prisma/client'
-import youtube from '../../../middleware/youtube'
+import {youtube, getChannelData} from '../../../middleware/youtube'
 
 const router = Router()
 const prisma = new PrismaClient();
 
 router.use(guildAccess)
 router.use(guildExists)
-
-const getChannelData = async (channelId: string) => {
-  if(!channelId) return undefined
-
-  const res = await youtube.channels.list({
-    id: [channelId],
-    part: ['contentDetails,snippet'],
-  })
-
-  return res.data.items
-}
 
 interface Youtube {
   channel:  string

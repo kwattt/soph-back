@@ -24,12 +24,12 @@ const checker : Event = {
             channel: {equals: "0"}
           }
         },
-        take: 35,
+        take: 25,
         skip: current_index
       })
 
-      if(streams.length >= 30){
-        current_index += 30
+      if(streams.length >= 25){
+        current_index += 25
       } else current_index = 0
 
       for(const stream of streams){
@@ -55,25 +55,27 @@ const checker : Event = {
             channel.send(stream.type === 1 ? "@here" : "@everyone")
           }
 
-          const user_info = await twitch.searchChannels({query: stream.name})
+          const user_info = await twitch.getUsers(user_data.user_id)
           const user_vals = user_info.data[0]
-          if(!user_vals) {
+          if(!user_vals || user_vals.display_name !== user_data.user_name) {
             const embed = new MessageEmbed()
-            .setTitle(`${stream.name} está en vivo!`)
-            .setURL(`https://twitch.tv/${user_data.user_name}`)
+            .setTitle(`${user_data.title}`)
+            .setURL(`${user_data.title}`) 
             .setThumbnail(user_data.getThumbnailUrl())
-            .setDescription(`**${user_data.viewer_count}** viewers\n- ${user_data.title}`)
+            .setDescription(`**${user_data.viewer_count}** viewers\n- ${stream.name}`)
+            .setFooter(`https://twitch.tv/${user_data.user_name}`)
 
             channel.send({embeds: [embed]})
             continue
           }
 
           const embed = new MessageEmbed()
-            .setAuthor(user_vals.display_name, user_vals.thumbnail_url, `https://twitch.tv/${user_data.user_name}`)
-            .setTitle(`${stream.name} está en vivo!`)
+            .setAuthor(user_vals.display_name, user_vals.profile_image_url, `https://twitch.tv/${user_data.user_name}`)
+            .setTitle(`${user_data.title}`)
             .setURL(`https://twitch.tv/${user_data.user_name}`)
             .setThumbnail(user_data.getThumbnailUrl())
-            .setDescription(`**${user_data.viewer_count}** viewers\n- ${user_data.title}`)
+            .setDescription(`**${user_data.viewer_count}** viewers\n- ${stream.name}`)
+            .setFooter(`https://twitch.tv/${user_data.user_name}`)
 
             channel.send({embeds: [embed]})
 
