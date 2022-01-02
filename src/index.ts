@@ -29,6 +29,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(), 
+      "script-src": ["https://sophii.kv-at.com", "sophii.kv-at.com"],   
       "img-src": ["'self'", 'data:', 'https://cdn.discordapp.com'],
       "connect-src": ["'self'", 'https://discord.com/api/v8/oauth2/token']
     }
