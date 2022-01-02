@@ -29,7 +29,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(), 
-      "script-src": ["https://sophii.kv-at.com", "sophii.kv-at.com"],   
+      "script-src": ["'self'", "'unsafe-inline'", "sophii.kv-at.com"],   
       "img-src": ["'self'", 'data:', 'https://cdn.discordapp.com'],
       "connect-src": ["'self'", 'https://discord.com/api/v8/oauth2/token']
     }
@@ -43,12 +43,16 @@ app.use(redisSession)
 app.use(discord)
 
 app.use(rest)
+app.set('trust proxy', 1)
 
 app.use(express.static(path.join(__dirname, '../build')))
 app.use('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../build', 'index.html'))
 })
 
+
 app.listen(process.env.APP_PORT, () => {console.log('listening on port ' + process.env.APP_PORT);})
+
+
 
 export default app
