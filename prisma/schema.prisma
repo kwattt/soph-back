@@ -98,7 +98,7 @@ model socials { // ✅
   last_update String @db.VarChar
   live        Int
   type        Int
-  real_name   String @db.VarChar(51)
+  real_name   String @db.VarChar(51) @default("")
 }
 
 model stalkmsgs { // ✅

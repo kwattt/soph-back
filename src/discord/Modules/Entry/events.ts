@@ -1,12 +1,14 @@
-import { GuildMember, TextChannel } from 'discord.js'
+import { GuildMember } from 'discord.js'
 import {Event} from './../../Helpers'
 
 import { PrismaClient } from '@prisma/client'
+
 const prisma = new PrismaClient();
+
 
 const leave: Event = {
   name: 'guildMemberRemove',
-  action: async (client, member) => {
+  action: async (client, member : GuildMember) => {
     if(!member.guild) return
     
     const channel = await prisma.guilds.findUnique({
@@ -21,9 +23,10 @@ const leave: Event = {
     if(!channel) return
     if(channel.welcome === '0') return
 
-    const channel_ds = member.guild.channels.cache.get(channel.welcome) as TextChannel
+    const channel_ds = member.guild.channels.cache.get(channel.welcome)
     if(!channel_ds) return
-    if(typeof channel_ds.send !== 'function') return
+    if(!channel_ds.isText()) return
+
 
     const welcome = await prisma.welcomes.findMany({
       where: {
@@ -55,9 +58,9 @@ const join: Event = {
     if(!channel) return
     if(channel.welcome === '0') return
 
-    const channel_ds = member.guild.channels.cache.get(channel.welcome) as TextChannel
+    const channel_ds = member.guild.channels.cache.get(channel.welcome)
     if(!channel_ds) return
-    if(typeof channel_ds.send !== 'function') return
+    if(!channel_ds.isText()) return
 
     const welcome = await prisma.welcomes.findMany({
       where: {

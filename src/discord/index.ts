@@ -15,7 +15,7 @@ client.start().then(() => {
 })
 
 client.once('ready', c => {
-	console.log('Bot cargado correctamente!');
+	console.log('Bot ready. wawaras 0.1');
 })
 
 export default client

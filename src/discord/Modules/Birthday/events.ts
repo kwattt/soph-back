@@ -1,7 +1,6 @@
 import {Event} from './../../Helpers'
 
 import { PrismaClient } from '@prisma/client'
-import { TextChannel } from 'discord.js';
 const prisma = new PrismaClient();
 
 /* 
@@ -37,7 +36,7 @@ const birthday : Event = {
           if(!guildData) 
             continue
   
-          const channel = guildData.channels.cache.get(guild.birthday) as TextChannel
+          const channel = guildData.channels.cache.get(guild.birthday)
           if(!channel){
             await prisma.guilds.update({
               where: {
@@ -48,8 +47,8 @@ const birthday : Event = {
               }
             })
             continue
-          }
-          if(typeof channel.send !== 'function'){
+          }          
+          if(!channel.isText()){
             await prisma.guilds.update({
               where: {
                 guild: guild.guild

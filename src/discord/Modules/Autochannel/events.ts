@@ -1,4 +1,4 @@
-import { TextChannel, VoiceChannel, VoiceState } from "discord.js"
+import { VoiceState } from "discord.js"
 import { Event } from "../../Helpers"
 
 import { PrismaClient } from '@prisma/client'
@@ -33,7 +33,9 @@ const autochannel : Event = {
       if(!oldState.channel) return
       if(!oldState.member) return
 
-      const channel = guildData.channels.cache.get(oldData[0].targetchannel) as TextChannel
+      const channel = guildData.channels.cache.get(oldData[0].targetchannel)
+      if(!channel) return
+      if(channel.isThread()) return
 
       channel.permissionOverwrites.create(oldState.member.id, {
         VIEW_CHANNEL: false,
@@ -56,7 +58,9 @@ const autochannel : Event = {
       if(!newState.channel) return
       if(!newState.member) return
 
-      const channel = guildData.channels.cache.get(newData[0].targetchannel) as TextChannel
+      const channel = guildData.channels.cache.get(newData[0].targetchannel)
+      if(!channel) return
+      if(channel.isThread()) return
 
       channel.permissionOverwrites.create(newState.member.id, {
         VIEW_CHANNEL: true,
@@ -84,7 +88,9 @@ const autochannel : Event = {
       if(!newState.channel) return
       if(!newState.member) return
 
-      const oldchannel = guildData.channels.cache.get(oldData[0].targetchannel) as TextChannel
+      const oldchannel = guildData.channels.cache.get(oldData[0].targetchannel)
+      if(!oldchannel) return
+      if(oldchannel.isThread()) return
 
       oldchannel.permissionOverwrites.create(newState.member.id, {
         VIEW_CHANNEL: false,
@@ -95,7 +101,9 @@ const autochannel : Event = {
       if(!newState.channel) return
       if(!newState.member) return
 
-      const newchannel = guildData.channels.cache.get(newData[0].targetchannel) as TextChannel
+      const newchannel = guildData.channels.cache.get(newData[0].targetchannel)
+      if(!newchannel) return
+      if(newchannel.isThread()) return
 
       newchannel.permissionOverwrites.create(newState.member.id, {
         VIEW_CHANNEL: true,

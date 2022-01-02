@@ -2,7 +2,7 @@ import {Event} from './../../Helpers'
 
 import { PrismaClient } from '@prisma/client'
 
-import { TextChannel, SnowflakeUtil } from 'discord.js'
+import {  SnowflakeUtil } from 'discord.js'
 
 const prisma = new PrismaClient()
 
@@ -30,9 +30,9 @@ const purge : Event = {
           
           if(utcHour.getUTCHours() !== purge.hour || utcHour.getUTCMinutes() !== purge.minute) continue
 
-          const channelData = guildData.channels.cache.get(purge.channel) as TextChannel
+          const channelData = guildData.channels.cache.get(purge.channel)
           if(!channelData) continue
-          if(typeof channelData.send !== 'function') continue
+          if(!channelData.isText()) continue
 
           utcHour.setHours(utcHour.getHours() - 24)
           const dateAfter = SnowflakeUtil.generate(utcHour)

@@ -1,6 +1,6 @@
 import {Event} from './../../Helpers'
 import { PrismaClient } from '@prisma/client'
-import { MessageEmbed, TextChannel } from 'discord.js'
+import { MessageEmbed } from 'discord.js'
 
 import twitch from './twitch'
 
@@ -15,7 +15,6 @@ const checker : Event = {
 
     const checkStreams = async () => {
       // 30 streams por minuto y vamos rotando.
-      console.log("stream check, index: " + current_index)
 
       const streams = await prisma.socials.findMany({
         where: {
@@ -33,11 +32,16 @@ const checker : Event = {
       } else current_index = 0
 
       for(const stream of streams){
+
+        const channel = client.channels.cache.get(stream.channel)
+        if(!channel) continue
+        if(!channel.isText()) continue
+
+        try {
+
         const stream_data = await twitch.getStreams({channel: stream.name})
         const user_data = stream_data.data[0]
 
-        const channel = client.channels.cache.get(stream.channel) as TextChannel
-        if(typeof channel.send !== 'function') return
 
         if(user_data && stream.live === 0){
           // is online
@@ -61,7 +65,8 @@ const checker : Event = {
             const embed = new MessageEmbed()
             .setTitle(`${user_data.title}`)
             .setURL(`${user_data.title}`) 
-            .setThumbnail(user_data.getThumbnailUrl())
+            .setColor(0xb40789)
+            .setImage(user_data.getThumbnailUrl())
             .setDescription(`**${user_data.viewer_count}** viewers\n- ${stream.name}`)
             .setFooter(`https://twitch.tv/${user_data.user_name}`)
 
@@ -73,7 +78,8 @@ const checker : Event = {
             .setAuthor(user_vals.display_name, user_vals.profile_image_url, `https://twitch.tv/${user_data.user_name}`)
             .setTitle(`${user_data.title}`)
             .setURL(`https://twitch.tv/${user_data.user_name}`)
-            .setThumbnail(user_data.getThumbnailUrl())
+            .setImage(user_data.getThumbnailUrl())
+            .setThumbnail(user_vals.profile_image_url)
             .setDescription(`**${user_data.viewer_count}** viewers\n- ${stream.name}`)
             .setFooter(`https://twitch.tv/${user_data.user_name}`)
 
@@ -92,7 +98,10 @@ const checker : Event = {
           })
 
           channel.send(`${stream.name} ya no está en vivo :(`)
+          }
 
+        } catch(e) {
+          console.log("[TWITCH]ERROR CON:", stream.name, e)
         }
 
       }

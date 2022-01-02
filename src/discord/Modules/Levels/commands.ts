@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders'
-import { CommandInteraction, MessageEmbed, TextChannel } from 'discord.js'
+import { CommandInteraction, MessageEmbed } from 'discord.js'
 import {Command} from './../../Helpers'
 
-import { PrismaClient, shops } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient();
 
 
@@ -220,12 +220,12 @@ const comprar : Command = {
       return
     }
 
-    const channel = guild.channels.cache.get(item.channel) as TextChannel
+    const channel = guild.channels.cache.get(item.channel)
     if(!channel){
       await interaction.reply("No se encontró el canal de la tienda!, informar a un administrador.")
       return
     }
-    if(typeof channel.send !== 'function') return
+    if(!channel.isText()) return
 
     if(item.type === 0) {
       await channel.send(`${interaction.member.user.username} ha comprado el item ${item.name}!`)

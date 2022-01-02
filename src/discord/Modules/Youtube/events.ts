@@ -1,8 +1,8 @@
 import {Event} from './../../Helpers'
 import { PrismaClient } from '@prisma/client'
-import { MessageEmbed, TextChannel } from 'discord.js'
+import { MessageEmbed } from 'discord.js'
 
-import {youtube, getPlaylist, getLastVideo} from '../../../middleware/youtube'
+import {getPlaylist, getLastVideo} from '../../../middleware/youtube'
 
 const prisma = new PrismaClient()
 
@@ -14,8 +14,6 @@ const checker : Event = {
   action: async (client) => {
 
     const checkYoutube = async () => {
-      // 30 vids por minuto y vamos rotando.
-      console.log("check vids, index", current_index)
 
       const vids = await prisma.socials.findMany({
         where: {
@@ -34,8 +32,9 @@ const checker : Event = {
 
 
       for(const vid of vids){
-        const channel = client.channels.cache.get(vid.channel) as TextChannel
-        if(typeof channel.send !== 'function') return
+        const channel = client.channels.cache.get(vid.channel)
+        if(!channel) continue
+        if(!channel.isText()) continue
 
         const playlistData = await getPlaylist(vid.name)
         if(playlistData && playlistData.playlist_id){
@@ -45,6 +44,7 @@ const checker : Event = {
               
               const embed = new MessageEmbed()
                 .setTitle(`Nuevo video de ${playlistData.name}`)
+                .setColor(0xdb1116)
                 .setURL(`https://www.youtube.com/watch?v=${lastVideo.last_id}`)
                 .setFooter(`https://www.youtube.com/watch?v=${lastVideo.last_id}`)
 
