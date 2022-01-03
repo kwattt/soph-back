@@ -1,6 +1,32 @@
 import { DiscordAPIError } from 'discord.js'
 import {Event} from './../../Helpers'
 
+import status from './status.json'
+
+const changeStatus : Event = {
+  name: "ready",
+  action: async (client) => {
+
+    const setStatus = async () => {
+      client.user?.setPresence(
+        {
+          status: "online",
+          afk: false,
+          activities: [
+            {
+              name: status.status[Math.floor(Math.random() * status.status.length)],
+              type: "PLAYING"
+            }
+          ]
+        }
+      )
+    }
+
+    setInterval(setStatus, 60000)
+
+  }
+}
+
 const commandHandling : Event = {
   name: 'interactionCreate',
   action: async (client, interaction) => {
@@ -24,4 +50,4 @@ const commandHandling : Event = {
   }
 }
 
-export const events = [commandHandling]
+export const events = [commandHandling, changeStatus]
