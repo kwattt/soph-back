@@ -22,14 +22,13 @@ const checker : Event = {
             channel: {equals: "0"}
           }
         },
-        take: 10,
+        take: 5,
         skip: current_index
       })
 
-      if(vids.length >= 10){
-        current_index += 10
+      if(vids.length >= 5){
+        current_index += 5
       } else current_index = 0
-
 
       for(const vid of vids){
         const channel = client.channels.cache.get(vid.channel)
@@ -75,7 +74,7 @@ const checker : Event = {
 
     }
 
-    setInterval(checkYoutube, 60000) // cada minuto
+    setInterval(checkYoutube, 5 * 60 * 6000) // cada 5 minuto
   }
 }
 
