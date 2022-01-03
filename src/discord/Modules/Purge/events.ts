@@ -34,7 +34,7 @@ const purge : Event = {
           if(!channelData) continue
           if(!channelData.isText()) continue
 
-          utcHour.setHours(utcHour.getHours() - 24)
+          utcHour.setHours(utcHour.getHours() - 180)
           const dateAfter = SnowflakeUtil.generate(utcHour)
 
           let fetched
