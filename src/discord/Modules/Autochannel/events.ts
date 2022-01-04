@@ -14,7 +14,9 @@ const autochannel : Event = {
 
     // CHECK PERMISSIONS
     if(!guildData.me) return
-    if(guildData.me.permissions.has('MANAGE_CHANNELS')) return
+
+    
+    if(!guildData.me.permissions.has('MANAGE_CHANNELS')) return
 
     if(oldState.channelId === newState.channelId) return
 
@@ -60,6 +62,7 @@ const autochannel : Event = {
 
       const channel = guildData.channels.cache.get(newData[0].targetchannel)
       if(!channel) return
+
       if(channel.isThread()) return
 
       channel.permissionOverwrites.create(newState.member.id, {

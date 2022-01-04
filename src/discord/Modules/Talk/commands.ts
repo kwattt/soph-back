@@ -24,7 +24,7 @@ const useless: Command = {
   action: async (interaction: CommandInteraction) => {
     if(interaction.isCommand()){
       await interaction.reply(messages.messages[Math.floor(Math.random() * messages.messages.length)])
-      await wait(2500)
+      await wait(15000)
       await interaction.deleteReply()
     }
   }
@@ -42,7 +42,7 @@ const google: Command = {
   action: async (interaction: CommandInteraction) => {
     const query = interaction.options.getString('query')
     if(query)
-      await interaction.reply(`https://www.google.com/search?q=${query}`)
+      await interaction.reply(`https://www.google.com/search?q=${encodeURIComponent(query)}`)
     else 
       await interaction.reply("No hay consulta! smh")
   }
@@ -104,7 +104,7 @@ const ddg: Command = {
   action: async (interaction: CommandInteraction) => {
     const query = interaction.options.getString('query')
     if(query)
-      await interaction.reply(`https://duckduckgo.com/?q=${query}`)
+      await interaction.reply(`https://duckduckgo.com/?q=${encodeURIComponent(query)}`)
     else 
       await interaction.reply("No hay consulta! smh")
   }
@@ -122,7 +122,7 @@ const youtube: Command = {
   action: async (interaction: CommandInteraction) => {
     const query = interaction.options.getString('query')
     if(query)
-      await interaction.reply(`https://www.youtube.com/results?search_query=${query}`)
+      await interaction.reply(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`)
     else 
       await interaction.reply("No hay consulta! smh")
   }
