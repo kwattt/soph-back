@@ -18,12 +18,19 @@ const Urban : Command = {
 
       if(response.data.list){
         if(response.data.list.length > 0) 
-        {
+        { 
+
+
           const first_result = response.data.list[0]
+          
+          let example = 'No hay ejemplo'
+          if(first_result.example && first_result.example.length > 0)
+            example = first_result.example
+
           const embed = new MessageEmbed()
             .setTitle(`${first_result.word}`)
             .setURL(first_result ? first_result.permalink : 'https://www.urbandictionary.com/')
-            .setDescription(`**${first_result.definition}**`)
+            .setDescription(`**Definición: \n${first_result.definition}** \n\n**Ejemplo:** \n${example}`)
             .setFooter(`Escrita por ${first_result.author}`)
             .setColor('#40cf8b')
           try { // hacer error handling como se debe.
