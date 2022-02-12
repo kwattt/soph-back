@@ -89,7 +89,7 @@ const levelVoice : Event = {
                   let newPoints = userData.points
 
 
-                  const newxp = 4
+                  const newxp = 1
                   const txp = userData.xp + newxp * guildInfo.levels
                   const isNewLevel = ((txp/XP_RATIO) > BASE_XP * Math.pow(userData.level+1, XP_SQRT))
               
@@ -131,7 +131,7 @@ const levelVoice : Event = {
 
     }
 
-    setInterval(voiceUsersLoop, 240000) // cada 4min
+    setInterval(voiceUsersLoop, 480000) // cada 4min
   }
 }
 
