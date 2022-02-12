@@ -40,11 +40,14 @@ const nivel: Command = {
     const target_xp = Math.floor((BASE_XP * Math.pow(levelData.level+1, XP_SQRT)) - BASE_XP * Math.pow(levelData.level, XP_SQRT))
     const next_level = Math.floor(current_xp * 100 / target_xp)
 
-    const embed = new MessageEmbed()
+    const next_coin_xp = ( BASE_XP * Math.pow((levelData.level % 25)+5, XP_SQRT) )
+    const next_point = Math.floor(levelData.nextcoin * 100 / next_coin_xp)
+
+    const embed = new MessageEmbed().setColor('#d5b1df')
     embed.setAuthor(`${interaction.user.username} en ${guild.name}`)
     embed.setThumbnail(interaction.user.displayAvatarURL())
-    embed.addField(`Nivel ${levelData.level}`, `${next_level}% para nivel ${levelData.level+1}`, true)
-    embed.addField("Puntos", String(levelData.points), true)
+    embed.addField(`Nivel ${levelData.level}`, `${next_level}% para nivel siguiente nivel`, true)
+    embed.addField(`Puntos ${levelData.points}`, `${next_point}% para siguiente punto`, false)
 
     interaction.reply({embeds: [embed]})
   }

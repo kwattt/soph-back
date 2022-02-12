@@ -38,9 +38,17 @@ model levels { // ✅
   guild  String @db.VarChar
   uid    String @db.VarChar
   points Int
+  nextcoin Int @default(0)
   xp     Int
   cd     Int
   level  Int
+}
+
+model levelrole{ // 
+  id      Int    @id @default(autoincrement())
+  guild   String @db.VarChar
+  role    String @db.VarChar(31)
+  level   Int
 }
 
 model logs {

@@ -45,7 +45,7 @@ const recordatorio : Command = {
 
     if(miliseconds > 72 * 60 * 60 * 1000)
     {
-      interaction.reply({ephemeral: true, content:"No puedes recordar más de 72 horas :("})
+      interaction.reply({ephemeral: true, content:"No puedes crear un recordatorio mayor a 72 horas :("})
       return
     }
 
